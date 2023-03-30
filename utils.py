@@ -21,6 +21,13 @@ def navigateThroughObjects(client, bucket, callBack):
         for object in page.get('Contents'):
             callBack(object);
 
+def applyForAllBucketsExcept(client, exceptions, callBack):
+    def _callBack(client, bucket, callBack):
+        if bucket in exceptions:
+            return
+        callBack(client, bucket)
+    utils.applyForAllBuckets(client, lambda client, bucket: _callBack(client, bucket, callBack))
+
 def applyForAllBuckets(client, callBack):
     for bucket in client.list_buckets().get('Buckets'):
         print(bucket)
