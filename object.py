@@ -48,3 +48,11 @@ def copy(client_to, client_from, bucket_from, bucket_to, object):
     key = object.get('Key')
     progress_tracker = utils.ProgressTracker(key, object.get('Size'))
     client_to.copy(CopySource={'Bucket': bucket_from, 'Key': key}, Bucket=bucket_to, Key=key, Callback=lambda s: progress_tracker.progress(s), SourceClient=client_from)
+
+def edit(s3, bucket, object, contentType):
+    print(object.get('Key'))
+    s3.Object(bucket, object.get('Key')).copy_from(
+            CopySource={'Bucket': bucket, 'Key': object.get('Key')},
+            Metadata={} if (object.get('Metadata') == None) else object.get('Metadata'),
+            MetadataDirective="REPLACE",
+            ContentType=contentType)
